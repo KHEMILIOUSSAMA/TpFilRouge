@@ -1,0 +1,40 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress3
+  annotations:
+    nginx.ingress.kubernetes.io/use-regex: "true"
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: localhost
+      http:
+        paths:
+          - path: /?(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: service-client
+                port:
+                  number: 3000
+          - path: /posts/?(.*)/comments
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: service-comment
+                port:
+                  number: 4001
+          - path: /posts
+            pathType: Prefix
+            backend:
+              service:
+                name: service-query
+                port:
+                  number: 4002
+          - path: /posts/create
+            pathType: Prefix
+            backend:
+              service:
+                name: service-posts
+                port:
+                  number: 4000
